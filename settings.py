@@ -1,5 +1,5 @@
 person='abc'
-thresholds=[.95,.9,.9,.9,.9,.93]
+thresholds=[.85,.85,.85,.85,.85,.85]
 tsrf=True
 #if true only image of eye will be processed may increase accuracy
 print_frame_rate=False
