@@ -5,14 +5,14 @@ from tensorflow import keras
 from settings import *
 import os
 pwdpath=os.getcwd()
-def findc(cap):
-    ret, img = cap.read()
-    img = cv2.flip(img,1)
+def findc(img):
+#     ret, img = cap.read()
+#     img = cv2.flip(img,1)
     rects = find_faces(img, face_model)
     marks = detect_marks(img, landmark_model, rects[0])
 #       avgp1= [(marks[36][0]+marks[39][0])/2,(marks[36][1]+marks[39][1])/2]
 #       avgp2= [(marks[42][0]+marks[45][0])/2,(marks[42][1]+marks[45][1])/2]
-    return marks
+    return marks, img
 def get_face_detector(modelFile = "models/res10_300x300_ssd_iter_140000.caffemodel",
                       configFile = "models/deploy.prototxt"):
     """
