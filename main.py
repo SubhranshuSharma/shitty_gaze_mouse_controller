@@ -1,6 +1,7 @@
 import os
 pwdpath=os.getcwd()
 from settings import *
+from PIL import ImageGrab
 if tsrf==True:
     from frontal_face import *
 if not os.path.isfile(f'{pwdpath}/profiles/{person}/dclick.jpg'):
@@ -100,9 +101,15 @@ while 1:
             print('dc')
             cap.set(cv2.CAP_PROP_BUFFERSIZE,1);ret, img = cap.read()
             time.sleep(delay_after_dclick_or_enable);cap.set(cv2.CAP_PROP_BUFFERSIZE,4)
+        box = (mousex-50,mousey-50,mousex+50,mousey+50)
+        cursor=np.asarray(ImageGrab.grab(box),dtype=np.uint8)
+        cursor=cv2.cvtColor(cursor,cv2.COLOR_BGR2RGB)
+        cv2.imshow('n',cursor)
         if tsrf==True:
-            cv2.imshow('eye',images[1])
-            cv2.imshow('bros',images[0])
+            if show_left_eye==True:
+                cv2.imshow('eye',images[1])
+            if show_left_eyebrow==True:    
+                cv2.imshow('bros',images[0])
         if tsrf==False:
             cv2.imshow('org',org)
         if cv2.waitKey(1)==ord('c'):
