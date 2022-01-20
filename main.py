@@ -76,12 +76,12 @@ while 1:
         box = (mousex-100,mousey-100,mousex+100,mousey+100)
         cursor=np.asarray(ImageGrab.grab(box),dtype=np.uint8)
         cursor=cv2.cvtColor(cursor,cv2.COLOR_BGR2RGB)
-        cursor=cv2.resize(cursor,(80,80))
+        cursor=cv2.resize(cursor,(120,120))
         cv2.imshow('cursoru',cursor);cv2.imshow('cursord',cursor);cv2.imshow('cursorl',cursor);cv2.imshow('cursorr',cursor)
         cv2.moveWindow('cursoru',int(sizex/2)-100,0)
         cv2.moveWindow('cursord',int(sizex/2)-100,sizey-120)
         cv2.moveWindow('cursorl',0,int(sizey/2)-100)
-        cv2.moveWindow('cursorr',sizex-200,int(sizey/2)-100)
+        cv2.moveWindow('cursorr',sizex-300,int(sizey/2)-100)
         if auto_correct_threshold==True:    
             if len(locc[1][0])>0 and len(locc[2][0])>0:
                 if mousey<(sizey*auto_correct_up_pixel_limit) or mousey>(sizey*auto_correct_down_pixel_limit):
