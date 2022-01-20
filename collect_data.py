@@ -7,7 +7,8 @@ pwdpath=os.getcwd()
 import numpy as np
 import cv2
 from frontal_face import *
-a='bros';data=['bros','up','down','left','right','dclick']
+a='bros'
+# data=['bros','up','down','left','right','dclick']
 cap=cv2.VideoCapture(0)
 cap.set(cv2.CAP_PROP_BUFFERSIZE,1)
 i=0
@@ -29,6 +30,7 @@ while 1:
 #         img=img*(60/np.average(img));img=img.astype('uint8')
 #         img=cv2.GaussianBlur(img,(5,5),cv2.BORDER_DEFAULT)
         cv2.imshow('img',img)
+        print(steps[i])
         print('press s to save anything else to retake')
         if cv2.waitKey(0)==ord('s'):
             img=cv2.resize(img,(50,25))

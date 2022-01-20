@@ -48,7 +48,7 @@ def tnsf(img,landmarks):
         i+=1
     return images 
 while 1:
-    try:
+#     try:
         times=time.time()
         ret, img = cap.read()
         org=img = cv2.flip(img,1)
@@ -73,27 +73,42 @@ while 1:
             print('enable:',enable)
             time.sleep(delay_after_dclick_or_enable);cap.set(cv2.CAP_PROP_BUFFERSIZE,4)
         mousex,mousey=pyautogui.position()
+        box = (mousex-100,mousey-100,mousex+100,mousey+100)
+        cursor=np.asarray(ImageGrab.grab(box),dtype=np.uint8)
+        cursor=cv2.cvtColor(cursor,cv2.COLOR_BGR2RGB)
+        cursor=cv2.resize(cursor,(50,50))
+        cv2.imshow('cursoru',cursor);cv2.imshow('cursord',cursor);cv2.imshow('cursorl',cursor);cv2.imshow('cursorr',cursor)
+        cv2.moveWindow('cursoru',int(sizex/2)-100,0)
+        cv2.moveWindow('cursord',int(sizex/2)-100,sizey-120)
+        cv2.moveWindow('cursorl',0,int(sizey/2)-100)
+        cv2.moveWindow('cursorr',sizex-200,int(sizey/2)-100)
         if auto_correct_threshold==True:    
-            if len(locc[1][0])>0 and len(locc[2][0])>0 and (sizey*auto_correct_up_pixel_limit)<mousey<(sizey*auto_correct_down_pixel_limit):
-                print('auto correcting threshold')
-                thresholds[1]=thresholds[1]+auto_threshold_correct_rate;thresholds[2]=thresholds[2]+auto_threshold_correct_rate
-            if len(locc[3][0])>0 and len(locc[4][0])>0 and (sizex*auto_correct_left_pixel_limit)<mousex<(sizex*auto_correct_right_pixel_limit):
-                thresholds[3]=thresholds[3]+auto_threshold_correct_rate;thresholds[4]=thresholds[4]+auto_threshold_correct_rate
-                print('auto correcting threshold')
+            if len(locc[1][0])>0 and len(locc[2][0])>0:
+                if mousey<(sizey*auto_correct_up_pixel_limit) or mousey>(sizey*auto_correct_down_pixel_limit):
+                    print('auto correcting threshold')
+                    thresholds[1]=thresholds[1]+auto_threshold_correct_rate;thresholds[2]=thresholds[2]+auto_threshold_correct_rate
+            if len(locc[3][0])>0 and len(locc[4][0])>0:
+                if mousex<(sizex*auto_correct_left_pixel_limit) or mousex>(sizex*auto_correct_right_pixel_limit):
+                    thresholds[3]=thresholds[3]+auto_threshold_correct_rate;thresholds[4]=thresholds[4]+auto_threshold_correct_rate
+                    print('auto correcting threshold')
         if len(locc[1][0])>0 and enable:
 #             print('up')
+#             cv2.moveWindow('cursor',int(sizex/2)-20,0)
             for i in range(cursor_speed):
                 pyautogui.move(0, -1)
         if len(locc[2][0])>0 and enable:
 #             print('down')
+#             cv2.moveWindow('cursor',int(sizex/2)-20,sizey-20)
             for i in range(cursor_speed):
                 pyautogui.move(0, 1)
         if len(locc[3][0])>0 and enable:
 #             print('left')
+#             cv2.moveWindow('cursor',0,int(sizey/2)-20)
             for i in range(cursor_speed):
                 pyautogui.move(-1, 0)
         if len(locc[4][0])>0 and enable:
 #             print('right')
+#             cv2.moveWindow('cursor',sizex-100,int(sizey/2))
             for i in range(cursor_speed):
                 pyautogui.move(1,0)
         if len(locc[5][0])>0 and enable:
@@ -101,15 +116,11 @@ while 1:
             print('dc')
             cap.set(cv2.CAP_PROP_BUFFERSIZE,1);ret, img = cap.read()
             time.sleep(delay_after_dclick_or_enable);cap.set(cv2.CAP_PROP_BUFFERSIZE,4)
-        box = (mousex-50,mousey-50,mousex+50,mousey+50)
-        cursor=np.asarray(ImageGrab.grab(box),dtype=np.uint8)
-        cursor=cv2.cvtColor(cursor,cv2.COLOR_BGR2RGB)
-        cv2.imshow('n',cursor)
         if tsrf==True:
             if show_left_eye==True:
-                cv2.imshow('eye',images[1])
+                cv2.imshow('left eye',images[1])
             if show_left_eyebrow==True:    
-                cv2.imshow('bros',images[0])
+                cv2.imshow('left eyebrow',images[0])
         if tsrf==False:
             cv2.imshow('org',org)
         if cv2.waitKey(1)==ord('c'):
@@ -128,5 +139,5 @@ while 1:
         if print_additive_average_frame_rate==True:
             print('afr:',sum(f_rate)/len(f_rate))
         locc=[]
-    except Exception as a:
-        print(a)
+#     except Exception as a:
+#         print(a)

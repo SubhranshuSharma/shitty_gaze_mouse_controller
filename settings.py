@@ -1,7 +1,7 @@
 person='abc'
-thresholds=[.9,.85,.85,.85,.85,.9]
+thresholds=[.95,.9,.9,.9,.9,.93]
 tsrf=True
-#use tensorflow all the time or not
+#if true only image of eye will be processed may increase accuracy
 print_frame_rate=False
 print_additive_average_frame_rate=False
 cursor_speed=3
@@ -20,3 +20,4 @@ data=['bros','up','down','left','right','dclick']
 color=[[0,0,0],[0,50,100],[100,50,0],[100,150,200],[200,150,100],[200,0,0]]
 correct=['e','u','d','l','r','c']
 #select the image widow and press c while running the script to change threshold
+steps=['raise your left eyebrow','look up','look down','look left','look right','close left eye']
