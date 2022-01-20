@@ -48,7 +48,7 @@ def tnsf(img,landmarks):
         i+=1
     return images 
 while 1:
-#     try:
+    try:
         times=time.time()
         ret, img = cap.read()
         org=img = cv2.flip(img,1)
@@ -76,7 +76,7 @@ while 1:
         box = (mousex-100,mousey-100,mousex+100,mousey+100)
         cursor=np.asarray(ImageGrab.grab(box),dtype=np.uint8)
         cursor=cv2.cvtColor(cursor,cv2.COLOR_BGR2RGB)
-        cursor=cv2.resize(cursor,(50,50))
+        cursor=cv2.resize(cursor,(80,80))
         cv2.imshow('cursoru',cursor);cv2.imshow('cursord',cursor);cv2.imshow('cursorl',cursor);cv2.imshow('cursorr',cursor)
         cv2.moveWindow('cursoru',int(sizex/2)-100,0)
         cv2.moveWindow('cursord',int(sizex/2)-100,sizey-120)
@@ -139,5 +139,5 @@ while 1:
         if print_additive_average_frame_rate==True:
             print('afr:',sum(f_rate)/len(f_rate))
         locc=[]
-#     except Exception as a:
-#         print(a)
+    except Exception as a:
+        print(a)
