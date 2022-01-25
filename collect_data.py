@@ -27,7 +27,8 @@ while 1:
             ly1=int(marks[37][1]); ly2=int(marks[40][1])
             img=img[ly1-10:ly2+10,lx1-10:lx2+15]
         print(f'{a} brightness:',np.average(img))
-#         img=img*(60/np.average(img));img=img.astype('uint8')
+        if brightness_correction==True:    
+            img=img*(60/np.average(img));img=img.astype('uint8')
 #         img=cv2.GaussianBlur(img,(5,5),cv2.BORDER_DEFAULT)
         cv2.imshow('img',img)
         print(steps[i])

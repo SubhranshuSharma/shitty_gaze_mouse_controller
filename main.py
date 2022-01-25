@@ -2,6 +2,7 @@ import os
 pwdpath=os.getcwd()
 from settings import *
 from PIL import ImageGrab
+from haar_face import *
 if tsrf==True:
     from frontal_face import *
 if not os.path.isfile(f'{pwdpath}/profiles/{person}/dclick.jpg'):
@@ -53,20 +54,22 @@ while 1:
         ret, img = cap.read()
         org=img = cv2.flip(img,1)
         if tsrf==False:
-            img=cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
+            try:
+                img,faces=find_face(img,face_cascade)
+            except:img=cv2.cvtColor(img,cv2.COLOR_BGR2GRAY);faces=[[0,0]]
             images=[]
             for i in range(len(data)):
                 images.append(img)
             images=np.asarray(images,dtype=np.uint8)
         if tsrf==True:
-            images=tnsf(img,landmarks)
+            images=tnsf(img,landmarks);faces=[[0,0]]
         for i in range(len(data)):
             prob = cv2.matchTemplate(images[i],x[i],cv2.TM_CCOEFF_NORMED)
 #             print(np.average(images[i]))
             loc = np.where(prob >= thresholds[i])
             locc.append(loc)
             for pt in zip(*loc[::-1]):
-                cv2.rectangle(org, pt, (pt[0] + w, pt[1] + h), (color[i][0],color[i][1],color[i][2]), 2)
+                cv2.rectangle(org, (pt[0]+faces[0][0],pt[1]+faces[0][1]), (pt[0]+faces[0][0] + w, pt[1]+faces[0][1] + h), (color[i][0],color[i][1],color[i][2]), 2)
         if len(locc[0][0])>0:
             enable = not enable
             cap.set(cv2.CAP_PROP_BUFFERSIZE,1);ret, img = cap.read()
@@ -78,8 +81,8 @@ while 1:
         cursor=cv2.cvtColor(cursor,cv2.COLOR_BGR2RGB)
         cursor=cv2.resize(cursor,(120,120))
         cv2.imshow('cursoru',cursor);cv2.imshow('cursord',cursor);cv2.imshow('cursorl',cursor);cv2.imshow('cursorr',cursor)
-        cv2.moveWindow('cursoru',int(sizex/2)-100,0)
-        cv2.moveWindow('cursord',int(sizex/2)-100,sizey-120)
+        cv2.moveWindow('cursoru',int(sizex/2)-120,0)
+        cv2.moveWindow('cursord',int(sizex/2)-120,sizey-200)
         cv2.moveWindow('cursorl',0,int(sizey/2)-100)
         cv2.moveWindow('cursorr',sizex-300,int(sizey/2)-100)
         if auto_correct_threshold==True:    
