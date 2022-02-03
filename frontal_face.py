@@ -176,7 +176,7 @@ def draw_marks(image, marks, color=(0, 255, 0)):
 face_model = get_face_detector()
 landmark_model = get_landmark_model()
 if __name__ == "__main__":
-    cap = cv2.VideoCapture(0)
+    cap = cv2.VideoCapture(video_source_number)
     while(True):
         try:
 

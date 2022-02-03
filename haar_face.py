@@ -1,6 +1,7 @@
 import numpy as np
 import cv2
 import time
+from settings import *
 #https://github.com/Itseez/opencv/blob/master/data/haarcascades/haarcascade_frontalface_default.xml
 face_cascade = cv2.CascadeClassifier('face.xml')
 #https://github.com/Itseez/opencv/blob/master/data/haarcascades/haarcascade_eye.xml
@@ -11,7 +12,7 @@ def find_face(img,face_cascade):
         roi = img[y:y+h, x:x+w]
     return roi,faces
 if __name__=='__main__':
-    cap = cv2.VideoCapture(0)  
+    cap = cv2.VideoCapture(video_source_number)  
     while 1:
         try:
             times=time.time()

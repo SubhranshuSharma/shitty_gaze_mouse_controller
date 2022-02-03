@@ -11,15 +11,20 @@ else:
     if input('collect new data?(y/enter)')=='y':
         from collect_data import *
     else:pass
+data.extend(['r_up','r_down','r_left','r_right'])
+thresholds.extend(extra_thresholds)
+color.extend(extra_colors)
+for i in range(4):
+    landmarks.append(['eye',42,45,43,46])
 # data=['bros','up','down','left','right','dclick']
 # color=[[0,0,0],[0,50,100],[100,50,0],[100,150,200],[200,150,100],[200,0,0]]
 # thresholds=[.95,.85,.85,.85,.85,.9]
 import math, time, cv2, pyautogui
-import numpy as np
-f_rate=[];x=[];locc=[]
+import numpy as np;from numpy import interp
+f_rate=[];x=[];locc=[];probabilities=[];min_x_prob=max_x_prob=last_max_x_prob=last_min_x_prob=min_y_prob=max_y_prob=last_max_y_prob=last_min_y_prob=m2x=m2y=0
 pyautogui.FAILSAFE = False; pyautogui.PAUSE=0
 enable=True;sizex,sizey=pyautogui.size()
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture(video_source_number)
 for i in range(len(data)):
     y = cv2.imread(f'{pwdpath}/profiles/{person}/{data[i]}.jpg',0)
     w, h = y.shape[::-1]
@@ -35,13 +40,15 @@ def tnsf(img,landmarks):
             ly1=int(marks[y1][1]);ly2=int((marks[landmarks[0][int(landmarks[0][4][0])]][1]+marks[landmarks[0][int(landmarks[0][4][2])]][1])/2)
             img=org[ly1-15:ly2+5,lx1-5:lx2+10]
             img=cv2.resize(img,(50,25))
-#             img=img*(60/np.average(img));img=img.astype('uint8')
+            if brightness_correction==True:    
+                img=img*(60/np.average(img));img=img.astype('uint8')
         elif landmarks[i][0]=='eye':
             lx1=int(marks[x1][0]); lx2=int(marks[x2][0])
             ly1=int(marks[y1][1]);ly2=int(marks[y2][1])
             img=org[ly1-10:ly2+10,lx1-10:lx2+15]
             img=cv2.resize(img,(50,25))
-#             img=img*(60/np.average(img));img=img.astype('uint8')
+            if brightness_correction==True:    
+                img=img*(60/np.average(img));img=img.astype('uint8')
 #         img=cv2.GaussianBlur(img,(5,5),cv2.BORDER_DEFAULT)
         images.append(img)
         if i==(len(data)-1):
@@ -65,61 +72,96 @@ while 1:
             images=tnsf(img,landmarks);faces=[[0,0]]
         for i in range(len(data)):
             prob = cv2.matchTemplate(images[i],x[i],cv2.TM_CCOEFF_NORMED)
-#             print(np.average(images[i]))
             loc = np.where(prob >= thresholds[i])
             locc.append(loc)
             for pt in zip(*loc[::-1]):
                 cv2.rectangle(org, (pt[0]+faces[0][0],pt[1]+faces[0][1]), (pt[0]+faces[0][0] + w, pt[1]+faces[0][1] + h), (color[i][0],color[i][1],color[i][2]), 2)
+            if tsrf==True:
+                probability=np.average(prob)
+            # if tsrf==False:
+            #     probability=np.average(prob[pt[1]+faces[0][1]:pt[1]+faces[0][1]+h,pt[0]+faces[0][0]:pt[0]+faces[0][0]+w])
+            if tsrf==True:
+                probabilities.append(probability)
+        if tsrf==True:
+            if probabilities[4]-probabilities[3]<0 and last_min_x_prob>probabilities[4]-probabilities[3]:
+                last_min_x_prob=min_x_prob=probabilities[4]-probabilities[3]
+            if probabilities[4]-probabilities[3]>0 and last_max_x_prob<probabilities[4]-probabilities[3]:
+                last_max_x_prob=max_x_prob=probabilities[4]-probabilities[3]
+            if probabilities[2]-probabilities[1]<0 and last_min_y_prob>probabilities[2]-probabilities[1]:
+                last_min_y_prob=min_y_prob=probabilities[2]-probabilities[1]
+            if probabilities[2]-probabilities[1]>0 and last_max_y_prob<probabilities[2]-probabilities[1]:
+                last_max_y_prob=max_y_prob=probabilities[2]-probabilities[1]
         if len(locc[0][0])>0:
             enable = not enable
             cap.set(cv2.CAP_PROP_BUFFERSIZE,1);ret, img = cap.read()
             print('enable:',enable)
             time.sleep(delay_after_dclick_or_enable);cap.set(cv2.CAP_PROP_BUFFERSIZE,4)
         mousex,mousey=pyautogui.position()
-        box = (mousex-100,mousey-100,mousex+100,mousey+100)
-        cursor=np.asarray(ImageGrab.grab(box),dtype=np.uint8)
-        cursor=cv2.cvtColor(cursor,cv2.COLOR_BGR2RGB)
-        cursor=cv2.resize(cursor,(120,120))
-        cv2.imshow('cursoru',cursor);cv2.imshow('cursord',cursor);cv2.imshow('cursorl',cursor);cv2.imshow('cursorr',cursor)
-        cv2.moveWindow('cursoru',int(sizex/2)-120,0)
-        cv2.moveWindow('cursord',int(sizex/2)-120,sizey-200)
-        cv2.moveWindow('cursorl',0,int(sizey/2)-100)
-        cv2.moveWindow('cursorr',sizex-300,int(sizey/2)-100)
-        if auto_correct_threshold==True:    
+        if mode==False:
+            box = (mousex-100,mousey-100,mousex+100,mousey+100)
+            cursor=np.asarray(ImageGrab.grab(box),dtype=np.uint8)
+            cursor=cv2.cvtColor(cursor,cv2.COLOR_BGR2RGB)
+            cursor=cv2.resize(cursor,(120,120))
+            cv2.imshow('cursoru',cursor);cv2.imshow('cursord',cursor);cv2.imshow('cursorl',cursor);cv2.imshow('cursorr',cursor)
+            cv2.moveWindow('cursoru',int(sizex/2)-120,0)
+            cv2.moveWindow('cursord',int(sizex/2)-120,sizey-200)
+            cv2.moveWindow('cursorl',0,int(sizey/2)-100)
+            cv2.moveWindow('cursorr',sizex-300,int(sizey/2)-100)
+        if mode==True:
+            cv2.destroyAllWindows()
+        if auto_correct_threshold==True:
+            if len(locc[7][0])>0 and len(locc[8][0])>0:
+                if mousey<(sizey*auto_correct_up_pixel_limit) or mousey>(sizey*auto_correct_down_pixel_limit):
+                    print('auto correcting threshold')
+                    thresholds[7]=thresholds[7]+auto_threshold_correct_rate;thresholds[8]=thresholds[8]+auto_threshold_correct_rate
             if len(locc[1][0])>0 and len(locc[2][0])>0:
                 if mousey<(sizey*auto_correct_up_pixel_limit) or mousey>(sizey*auto_correct_down_pixel_limit):
                     print('auto correcting threshold')
                     thresholds[1]=thresholds[1]+auto_threshold_correct_rate;thresholds[2]=thresholds[2]+auto_threshold_correct_rate
+            if len(locc[9][0])>0 and len(locc[10][0])>0:
+                if mousey<(sizey*auto_correct_up_pixel_limit) or mousey>(sizey*auto_correct_down_pixel_limit):
+                    print('auto correcting threshold')
+                    thresholds[9]=thresholds[9]+auto_threshold_correct_rate;thresholds[10]=thresholds[10]+auto_threshold_correct_rate   
             if len(locc[3][0])>0 and len(locc[4][0])>0:
                 if mousex<(sizex*auto_correct_left_pixel_limit) or mousex>(sizex*auto_correct_right_pixel_limit):
                     thresholds[3]=thresholds[3]+auto_threshold_correct_rate;thresholds[4]=thresholds[4]+auto_threshold_correct_rate
                     print('auto correcting threshold')
-        if len(locc[1][0])>0 and enable:
+        if tsrf==False:mode=False
+        if (len(locc[1][0])>0 or (len(locc[7][0])>0) and len(locc[7][0])>0) and enable and mode==False:
 #             print('up')
 #             cv2.moveWindow('cursor',int(sizex/2)-20,0)
             for i in range(cursor_speed):
                 pyautogui.move(0, -1)
-        if len(locc[2][0])>0 and enable:
+        if (len(locc[2][0])>0 or len(locc[8][0])>0) and enable and mode==False:
 #             print('down')
 #             cv2.moveWindow('cursor',int(sizex/2)-20,sizey-20)
             for i in range(cursor_speed):
                 pyautogui.move(0, 1)
-        if len(locc[3][0])>0 and enable:
+        if (len(locc[3][0])>0 or len(locc[9][0])>0) and enable and mode==False:
 #             print('left')
 #             cv2.moveWindow('cursor',0,int(sizey/2)-20)
             for i in range(cursor_speed):
                 pyautogui.move(-1, 0)
-        if len(locc[4][0])>0 and enable:
+        if (len(locc[4][0])>0 or len(locc[10][0])>0) and enable and mode==False:
 #             print('right')
 #             cv2.moveWindow('cursor',sizex-100,int(sizey/2))
             for i in range(cursor_speed):
                 pyautogui.move(1,0)
-        if len(locc[5][0])>0 and enable:
+        if len(locc[5][0])>0 and enable and len(locc[6][0])==0:
             pyautogui.doubleClick()
             print('dc')
             cap.set(cv2.CAP_PROP_BUFFERSIZE,1);ret, img = cap.read()
             time.sleep(delay_after_dclick_or_enable);cap.set(cv2.CAP_PROP_BUFFERSIZE,4)
-        if tsrf==True:
+        if len(locc[6][0])>0 and enable and tsrf and not len(locc[5][0])>0:
+            mode=not mode
+            print(f'mode:{mode}')
+            cap.set(cv2.CAP_PROP_BUFFERSIZE,1);ret, img = cap.read()
+            time.sleep(delay_after_dclick_or_enable);cap.set(cv2.CAP_PROP_BUFFERSIZE,4)
+        if mode==True and enable and tsrf:
+            m2x=interp(probabilities[4]-probabilities[3],[min_x_prob,max_x_prob],[0,sizex])
+            m2y=interp(probabilities[2]-probabilities[1],[min_y_prob,max_y_prob],[0,sizey])
+            pyautogui.moveTo(m2x,m2y)
+        if tsrf==True and not mode:
             if show_left_eye==True:
                 cv2.imshow('left eye',images[1])
             if show_left_eyebrow==True:    
@@ -127,7 +169,7 @@ while 1:
         if tsrf==False:
             cv2.imshow('org',org)
         if cv2.waitKey(1)==ord('c'):
-            iput=input('which function is not working?(e/u/d/l/r/c):')
+            iput=input('which function is not working?(e/u/d/l/r/c/m):')
             for i in range(len(correct)):
                 if iput==correct[i]:
                     undrovr=input('decrease or increase threshold?(d/i):')
@@ -141,6 +183,6 @@ while 1:
             print('fr:',1/(time.time()-times))
         if print_additive_average_frame_rate==True:
             print('afr:',sum(f_rate)/len(f_rate))
-        locc=[]
+        locc=[];probabilities=[]
     except Exception as a:
         print(a)
