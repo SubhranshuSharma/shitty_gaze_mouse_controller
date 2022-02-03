@@ -41,7 +41,9 @@ while 1:
 #         img=cv2.GaussianBlur(img,(5,5),cv2.BORDER_DEFAULT)
         cv2.imshow('img',img)
         sizex,sizey=pyautogui.size()
-        if i in [1,2,3,4]:cv2.imshow('right eye',r_);cv2.moveWindow('right eye',int((sizex/2)-150),int(sizey/2)-150)
+        if i in [1,2,3,4]:
+            cv2.imshow('right eye',r_);cv2.moveWindow('right eye',int((sizex/2)-150),int(sizey/2)-150)
+        if i==5:cv2.destroyWindow('right eye')
         print(steps[i])
         print('press s to save anything else to retake')
         if cv2.waitKey(0)==ord('s'):
