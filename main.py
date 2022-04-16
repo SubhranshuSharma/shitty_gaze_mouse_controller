@@ -168,16 +168,30 @@ while 1:
                 cv2.imshow('left eyebrow',images[0])
         if tsrf==False:
             cv2.imshow('org',org)
-        if cv2.waitKey(1)==ord('c'):
-            iput=input('which function is not working?(e/u/d/l/r/c/m):')
-            for i in range(len(correct)):
-                if iput==correct[i]:
-                    undrovr=input('decrease or increase threshold?(d/i):')
-                    if undrovr=='d':
-                        thresholds[i]=thresholds[i]-threshold_correction_rate
-                    if undrovr=='i':
-                        thresholds[i]=thresholds[i]+threshold_correction_rate
-            print(thresholds)
+        if cv2.waitKey(1)==82 and (len(locc[1][0])==0 or len(locc[len(data)-4][0])==0 or len(locc[2][0])>0 or len(locc[3][0])>0 or len(locc[4][0])>0 or len(locc[len(data)-3][0])>0 or len(locc[len(data)-2][0])>0 or len(locc[len(data)-1][0])>0):
+            print('correcting up',thresholds)
+            for i in [1,len(data)-4]:
+                if len(locc[i][0])==0:thresholds[i]-=threshold_correction_rate
+            for i in [2,3,4,len(data)-3,len(data)-2,len(data)-1]:
+                if len(locc[i][0])>0:thresholds[i]+=threshold_correction_rate
+        if cv2.waitKey(1)==84 and (len(locc[2][0])==0 or len(locc[len(data)-3][0])==0 or len(locc[1][0])>0 or len(locc[3][0])>0 or len(locc[4][0])>0 or len(locc[len(data)-4][0])>0 or len(locc[len(data)-2][0])>0 or len(locc[len(data)-1][0])>0):
+            print('correcting down',thresholds)
+            for i in [2,len(data)-3]: 
+                if len(locc[i][0])==0:thresholds[i]-=threshold_correction_rate
+            for i in [1,3,4,len(data)-4,len(data)-2,len(data)-1]:
+                if len(locc[i][0])>0:thresholds[i]+=threshold_correction_rate   
+        if cv2.waitKey(1)==81 and (len(locc[3][0])==0 or len(locc[len(data)-2][0])==0 or len(locc[1][0])>0 or len(locc[2][0])>0 or len(locc[4][0])>0 or len(locc[len(data)-4][0])>0 or len(locc[len(data)-3][0])>0 or len(locc[len(data)-1][0])>0):
+            print('correcting left',thresholds)
+            for i in [3,len(data)-2]:
+                if len(locc[i][0])==0:thresholds[i]-=threshold_correction_rate
+            for i in [1,2,4,len(data)-4,len(data)-3,len(data)-1]:
+                if len(locc[i][0])>0:thresholds[i]+=threshold_correction_rate
+        if cv2.waitKey(1)==83 and (len(locc[4][0])==0 or len(locc[len(data)-1][0])==0 or len(locc[1][0])>0 or len(locc[2][0])>0 or len(locc[3][0])>0 or len(locc[len(data)-4][0])>0 or len(locc[len(data)-3][0])>0 or len(locc[len(data)-2][0])>0):
+            print('correcting right',thresholds)
+            for i in [4,len(data)-1]:
+                if len(locc[i][0])==0:thresholds[i]-=threshold_correction_rate
+            for i in [1,2,3,len(data)-4,len(data)-4,len(data)-2]:
+                if len(locc[i][0])>0:thresholds[i]+=threshold_correction_rate
         f_rate.append(1/(time.time()-times))
         if print_frame_rate==True:
             print('fr:',1/(time.time()-times))
@@ -186,3 +200,4 @@ while 1:
         locc=[];probabilities=[]
     except Exception as a:
         print(a)
+        

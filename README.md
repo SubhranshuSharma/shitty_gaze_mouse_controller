@@ -12,3 +12,4 @@ if script is running slower than in video that is because the default setting of
 
 more detailed instructions coming in no longer than 8 years.
 
+discord server for suggestions or whatever- https://discord.gg/YBuQuHRc59
