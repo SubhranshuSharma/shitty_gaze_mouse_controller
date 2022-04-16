@@ -1,4 +1,5 @@
 person='abc'
+video_source_number=0
 thresholds=[.9,.85,.85,.85,.85,.95,.9]
 extra_thresholds=[.85,.85,.85,.85]
 #select the image widow and press c while running the script to change threshold
@@ -26,7 +27,6 @@ color=[[0,0,0],[0,50,100],[100,50,0],[100,150,200],[200,150,100],[200,0,0],[0,0,
 extra_colors=[[0,50,100],[100,50,0],[100,150,200],[200,150,100]]
 correct=['e','u','d','l','r','c','m']
 steps=['raise your left eyebrow','look up','look down','look left','look right','close left eye','close right eye']
-video_source_number=1
 
 
 
