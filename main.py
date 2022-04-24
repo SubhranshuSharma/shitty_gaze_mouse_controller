@@ -21,14 +21,16 @@ for i in range(4):
 # thresholds=[.95,.85,.85,.85,.85,.9]
 import math, time, cv2, pyautogui
 import numpy as np;from numpy import interp
-f_rate=[];x=[];locc=[];probabilities=[];min_x_prob=max_x_prob=last_max_x_prob=last_min_x_prob=min_y_prob=max_y_prob=last_max_y_prob=last_min_y_prob=m2x=m2y=0
+f_rate=[];x=[];locc=[];probabilities=[];r_min_x_prob=min_x_prob=r_max_x_prob=max_x_prob=r_last_max_x_prob=last_max_x_prob=r_last_min_x_prob=last_min_x_prob=r_min_y_prob=min_y_prob=r_max_y_prob=max_y_prob=r_last_max_y_prob=last_max_y_prob=r_last_min_y_prob=last_min_y_prob=r_m2x=m2x=r_m2y=m2y=0
 pyautogui.FAILSAFE = False; pyautogui.PAUSE=0
 enable=True;sizex,sizey=pyautogui.size()
 cap = cv2.VideoCapture(video_source_number)
+# loading saved images 
 for i in range(len(data)):
     y = cv2.imread(f'{pwdpath}/profiles/{person}/{data[i]}.jpg',0)
     w, h = y.shape[::-1]
     x.append(y)
+# function to crop eyes and eyebrows out of frame
 def tnsf(img,landmarks):
     images=[]
     marks,img=findc(img)
@@ -70,6 +72,7 @@ while 1:
             images=np.asarray(images,dtype=np.uint8)
         if tsrf==True:
             images=tnsf(img,landmarks);faces=[[0,0]]
+#       compares images cropped from live feed with saved images and applies threshold 
         for i in range(len(data)):
             prob = cv2.matchTemplate(images[i],x[i],cv2.TM_CCOEFF_NORMED)
             loc = np.where(prob >= thresholds[i])
@@ -82,6 +85,7 @@ while 1:
             #     probability=np.average(prob[pt[1]+faces[0][1]:pt[1]+faces[0][1]+h,pt[0]+faces[0][0]:pt[0]+faces[0][0]+w])
             if tsrf==True:
                 probabilities.append(probability)
+#       tracks minimum probability number and max probability number
         if tsrf==True:
             if probabilities[4]-probabilities[3]<0 and last_min_x_prob>probabilities[4]-probabilities[3]:
                 last_min_x_prob=min_x_prob=probabilities[4]-probabilities[3]
@@ -91,12 +95,21 @@ while 1:
                 last_min_y_prob=min_y_prob=probabilities[2]-probabilities[1]
             if probabilities[2]-probabilities[1]>0 and last_max_y_prob<probabilities[2]-probabilities[1]:
                 last_max_y_prob=max_y_prob=probabilities[2]-probabilities[1]
+            if probabilities[len(data)-1]-probabilities[len(data)-2]<0 and r_last_min_x_prob>probabilities[len(data)-1]-probabilities[len(data)-2]:
+                r_last_min_x_prob=r_min_x_prob=probabilities[len(data)-1]-probabilities[len(data)-2]
+            if probabilities[len(data)-1]-probabilities[len(data)-2]>0 and r_last_max_x_prob<probabilities[len(data)-1]-probabilities[len(data)-2]:
+                r_last_max_x_prob=r_max_x_prob=probabilities[len(data)-1]-probabilities[len(data)-2]
+            if probabilities[len(data)-3]-probabilities[len(data)-4]<0 and r_last_min_y_prob>probabilities[len(data)-3]-probabilities[len(data)-4]:
+                r_last_min_y_prob=r_min_y_prob=probabilities[len(data)-3]-probabilities[len(data)-4]
+            if probabilities[len(data)-3]-probabilities[len(data)-4]>0 and r_last_max_y_prob<probabilities[len(data)-3]-probabilities[len(data)-4]:
+                r_last_max_y_prob=r_max_y_prob=probabilities[len(data)-3]-probabilities[len(data)-4]
         if len(locc[0][0])>0:
             enable = not enable
             cap.set(cv2.CAP_PROP_BUFFERSIZE,1);ret, img = cap.read()
             print('enable:',enable)
             time.sleep(delay_after_dclick_or_enable);cap.set(cv2.CAP_PROP_BUFFERSIZE,4)
         mousex,mousey=pyautogui.position()
+#       displays screen in small windows
         if mode==False:
             box = (mousex-100,mousey-100,mousex+100,mousey+100)
             cursor=np.asarray(ImageGrab.grab(box),dtype=np.uint8)
@@ -127,24 +140,29 @@ while 1:
                     thresholds[3]=thresholds[3]+auto_threshold_correct_rate;thresholds[4]=thresholds[4]+auto_threshold_correct_rate
                     print('auto correcting threshold')
         if tsrf==False:mode=False
+#       takes action according to result from templet matching
         if (len(locc[1][0])>0 or (len(locc[7][0])>0) and len(locc[7][0])>0) and enable and mode==False:
 #             print('up')
 #             cv2.moveWindow('cursor',int(sizex/2)-20,0)
+            cv2.destroyWindow('cursord')
             for i in range(cursor_speed):
                 pyautogui.move(0, -1)
         if (len(locc[2][0])>0 or len(locc[8][0])>0) and enable and mode==False:
 #             print('down')
 #             cv2.moveWindow('cursor',int(sizex/2)-20,sizey-20)
+            cv2.destroyWindow('cursoru')
             for i in range(cursor_speed):
                 pyautogui.move(0, 1)
         if (len(locc[3][0])>0 or len(locc[9][0])>0) and enable and mode==False:
 #             print('left')
 #             cv2.moveWindow('cursor',0,int(sizey/2)-20)
+            cv2.destroyWindow('cursorr')
             for i in range(cursor_speed):
                 pyautogui.move(-1, 0)
         if (len(locc[4][0])>0 or len(locc[10][0])>0) and enable and mode==False:
 #             print('right')
 #             cv2.moveWindow('cursor',sizex-100,int(sizey/2))
+            cv2.destroyWindow('cursorl')
             for i in range(cursor_speed):
                 pyautogui.move(1,0)
         if len(locc[5][0])>0 and enable and len(locc[6][0])==0:
@@ -157,10 +175,13 @@ while 1:
             print(f'mode:{mode}')
             cap.set(cv2.CAP_PROP_BUFFERSIZE,1);ret, img = cap.read()
             time.sleep(delay_after_dclick_or_enable);cap.set(cv2.CAP_PROP_BUFFERSIZE,4)
+#       exact pixel pridiction
         if mode==True and enable and tsrf:
             m2x=interp(probabilities[4]-probabilities[3],[min_x_prob,max_x_prob],[0,sizex])
             m2y=interp(probabilities[2]-probabilities[1],[min_y_prob,max_y_prob],[0,sizey])
-            pyautogui.moveTo(m2x,m2y)
+            r_m2x=interp(probabilities[len(data)-1]-probabilities[len(data)-2],[r_min_x_prob,r_max_x_prob],[0,sizex])
+            r_m2y=interp(probabilities[len(data)-3]-probabilities[len(data)-4],[r_min_y_prob,r_max_y_prob],[0,sizey])
+            pyautogui.moveTo(int((m2x+r_m2x)/2),int((m2y+r_m2y)/2))
         if tsrf==True and not mode:
             if show_left_eye==True:
                 cv2.imshow('left eye',images[1])
@@ -168,6 +189,7 @@ while 1:
                 cv2.imshow('left eyebrow',images[0])
         if tsrf==False:
             cv2.imshow('org',org)
+#       threshold correction by arrow keys
         if cv2.waitKey(1)==82 and (len(locc[1][0])==0 or len(locc[len(data)-4][0])==0 or len(locc[2][0])>0 or len(locc[3][0])>0 or len(locc[4][0])>0 or len(locc[len(data)-3][0])>0 or len(locc[len(data)-2][0])>0 or len(locc[len(data)-1][0])>0):
             print('correcting up',thresholds)
             for i in [1,len(data)-4]:

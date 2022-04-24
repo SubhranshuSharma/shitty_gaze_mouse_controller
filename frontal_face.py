@@ -5,6 +5,7 @@ from tensorflow import keras
 from settings import *
 import os
 pwdpath=os.getcwd()
+#modified from- https://medium.com/towards-data-science/robust-facial-landmarks-for-occluded-angled-faces-925e465cbf2e
 def findc(img):
 #     ret, img = cap.read()
 #     img = cv2.flip(img,1)
