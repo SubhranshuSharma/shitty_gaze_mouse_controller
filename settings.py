@@ -3,7 +3,7 @@ video_source_number=1
 thresholds=[.9,.85,.85,.85,.85,.95,.9]
 extra_thresholds=[.85,.85,.85,.85]
 #select the image widow and press arrow keys while running the script and looking in appropriate direction to change threshold
-tsrf=True
+tsrf=False
 #if true only image of eye will be processed may increase accuracy
 mode=False
 print_frame_rate=False

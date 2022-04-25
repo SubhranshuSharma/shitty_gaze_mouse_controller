@@ -144,25 +144,25 @@ while 1:
         if (len(locc[1][0])>0 or (len(locc[7][0])>0) and len(locc[7][0])>0) and enable and mode==False:
 #             print('up')
 #             cv2.moveWindow('cursor',int(sizex/2)-20,0)
-            cv2.destroyWindow('cursord')
+#             cv2.destroyWindow('cursord')
             for i in range(cursor_speed):
                 pyautogui.move(0, -1)
         if (len(locc[2][0])>0 or len(locc[8][0])>0) and enable and mode==False:
 #             print('down')
 #             cv2.moveWindow('cursor',int(sizex/2)-20,sizey-20)
-            cv2.destroyWindow('cursoru')
+#             cv2.destroyWindow('cursoru')
             for i in range(cursor_speed):
                 pyautogui.move(0, 1)
         if (len(locc[3][0])>0 or len(locc[9][0])>0) and enable and mode==False:
 #             print('left')
 #             cv2.moveWindow('cursor',0,int(sizey/2)-20)
-            cv2.destroyWindow('cursorr')
+#             cv2.destroyWindow('cursorr')
             for i in range(cursor_speed):
                 pyautogui.move(-1, 0)
         if (len(locc[4][0])>0 or len(locc[10][0])>0) and enable and mode==False:
 #             print('right')
 #             cv2.moveWindow('cursor',sizex-100,int(sizey/2))
-            cv2.destroyWindow('cursorl')
+#             cv2.destroyWindow('cursorl')
             for i in range(cursor_speed):
                 pyautogui.move(1,0)
         if len(locc[5][0])>0 and enable and len(locc[6][0])==0:
