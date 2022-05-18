@@ -2,7 +2,6 @@ import numpy as np
 import cv2
 import time
 from settings import *
-#https://github.com/Itseez/opencv/blob/master/data/haarcascades/haarcascade_frontalface_default.xml
 face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades+'haarcascade_frontalface_default.xml')
 def find_face(img,face_cascade):
     img=cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
