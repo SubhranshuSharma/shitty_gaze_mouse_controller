@@ -1,5 +1,5 @@
 person='abc'
-video_source_number=1
+video_source_number=0
 thresholds=[.9,.85,.85,.85,.85,.95,.9]
 extra_thresholds=[.85,.85,.85,.85]
 #select the image widow and press w,s,a,d keys while running the script and looking in appropriate direction to change threshold
