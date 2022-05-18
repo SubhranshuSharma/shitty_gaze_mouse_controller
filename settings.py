@@ -2,7 +2,7 @@ person='abc'
 video_source_number=1
 thresholds=[.9,.85,.85,.85,.85,.95,.9]
 extra_thresholds=[.85,.85,.85,.85]
-#select the image widow and press arrow keys while running the script and looking in appropriate direction to change threshold
+#select the image widow and press w,s,a,d keys while running the script and looking in appropriate direction to change threshold
 tsrf=False
 #if true only image of eye will be processed may increase accuracy
 mode=False
@@ -25,7 +25,7 @@ landmarks=[['bros',17,21,19,'1122'],['eye',36,39,37,40],['eye',36,39,37,40],['ey
 data=['bros','up','down','left','right','dclick','r_close']
 color=[[0,0,0],[0,50,100],[100,50,0],[100,150,200],[200,150,100],[200,0,0],[0,0,0]]
 extra_colors=[[0,50,100],[100,50,0],[100,150,200],[200,150,100]]
-# correct=['e','u','d','l','r','c','m']
+correct=['e','u','d','l','r','c','m']
 steps=['raise your left eyebrow','look up','look down','look left','look right','close left eye','close right eye']
 
 
