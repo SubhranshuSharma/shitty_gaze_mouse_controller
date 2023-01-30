@@ -3,9 +3,8 @@ video_source_number=0
 thresholds=[.9,.85,.85,.85,.85,.95,.9]
 extra_thresholds=[.85,.85,.85,.85]
 #select the image widow and press w,s,a,d keys while running the script and looking in appropriate direction to change threshold
-tsrf=True
-#if true only image of eye will be processed may increase accuracy
-mode=False
+tsrf=True     #if true only image of eye will be processed, may increase accuracy
+mode=False    #default mode
 print_frame_rate=False
 print_additive_average_frame_rate=False
 cursor_speed=3
@@ -17,6 +16,7 @@ auto_correct_down_pixel_limit=.5
 delay_after_dclick_or_enable=.1
 threshold_correction_rate=.01
 auto_threshold_correct_rate=.01
+cur=False
 brightness_correction=False
 #brightness_correction doesnt work well
 show_left_eye=True

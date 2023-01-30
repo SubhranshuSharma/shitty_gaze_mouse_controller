@@ -110,7 +110,7 @@ while 1:
             time.sleep(delay_after_dclick_or_enable);cap.set(cv2.CAP_PROP_BUFFERSIZE,4)
         mousex,mousey=pyautogui.position()
 #       displays screen in small windows
-        if mode==False:
+        if mode==False and enable==True and cur==True:
             box = (mousex-100,mousey-100,mousex+100,mousey+100)
             cursor=np.asarray(ImageGrab.grab(box),dtype=np.uint8)
             cursor=cv2.cvtColor(cursor,cv2.COLOR_BGR2RGB)
@@ -120,7 +120,7 @@ while 1:
             cv2.moveWindow('cursord',int(sizex/2)-120,sizey-200)
             cv2.moveWindow('cursorl',0,int(sizey/2)-100)
             cv2.moveWindow('cursorr',sizex-300,int(sizey/2)-100)
-        if mode==True:
+        if mode==True or enable==False:
             cv2.destroyAllWindows()
         if auto_correct_threshold==True:
             if len(locc[7][0])>0 and len(locc[8][0])>0:
@@ -182,7 +182,7 @@ while 1:
             r_m2x=interp(probabilities[len(data)-1]-probabilities[len(data)-2],[r_min_x_prob,r_max_x_prob],[0,sizex])
             r_m2y=interp(probabilities[len(data)-3]-probabilities[len(data)-4],[r_min_y_prob,r_max_y_prob],[0,sizey])
             pyautogui.moveTo(int((m2x+r_m2x)/2),int((m2y+r_m2y)/2))
-        if tsrf==True and not mode:
+        if tsrf==True and not mode and enable:
             if show_left_eye==True:
                 cv2.imshow('left eye',images[1])
             if show_left_eyebrow==True:    
@@ -190,25 +190,26 @@ while 1:
         if tsrf==False:
             cv2.imshow('org',org)
 #       threshold correction by w,s,a,d keys
-        if cv2.waitKey(1)==ord('w') and (len(locc[1][0])==0 or len(locc[len(data)-4][0])==0 or len(locc[2][0])>0 or len(locc[3][0])>0 or len(locc[4][0])>0 or len(locc[len(data)-3][0])>0 or len(locc[len(data)-2][0])>0 or len(locc[len(data)-1][0])>0):
+        k=cv2.waitKey(1)
+        if k==ord('w') and (len(locc[1][0])==0 or len(locc[len(data)-4][0])==0 or len(locc[2][0])>0 or len(locc[3][0])>0 or len(locc[4][0])>0 or len(locc[len(data)-3][0])>0 or len(locc[len(data)-2][0])>0 or len(locc[len(data)-1][0])>0):
             print('correcting up',thresholds)
             for i in [1,len(data)-4]:
                 if len(locc[i][0])==0:thresholds[i]-=threshold_correction_rate
             for i in [2,3,4,len(data)-3,len(data)-2,len(data)-1]:
                 if len(locc[i][0])>0:thresholds[i]+=threshold_correction_rate
-        if cv2.waitKey(1)==ord('s') and (len(locc[2][0])==0 or len(locc[len(data)-3][0])==0 or len(locc[1][0])>0 or len(locc[3][0])>0 or len(locc[4][0])>0 or len(locc[len(data)-4][0])>0 or len(locc[len(data)-2][0])>0 or len(locc[len(data)-1][0])>0):
+        if k==ord('s') and (len(locc[2][0])==0 or len(locc[len(data)-3][0])==0 or len(locc[1][0])>0 or len(locc[3][0])>0 or len(locc[4][0])>0 or len(locc[len(data)-4][0])>0 or len(locc[len(data)-2][0])>0 or len(locc[len(data)-1][0])>0):
             print('correcting down',thresholds)
             for i in [2,len(data)-3]: 
                 if len(locc[i][0])==0:thresholds[i]-=threshold_correction_rate
             for i in [1,3,4,len(data)-4,len(data)-2,len(data)-1]:
                 if len(locc[i][0])>0:thresholds[i]+=threshold_correction_rate   
-        if cv2.waitKey(1)==ord('a') and (len(locc[3][0])==0 or len(locc[len(data)-2][0])==0 or len(locc[1][0])>0 or len(locc[2][0])>0 or len(locc[4][0])>0 or len(locc[len(data)-4][0])>0 or len(locc[len(data)-3][0])>0 or len(locc[len(data)-1][0])>0):
+        if k==ord('a') and (len(locc[3][0])==0 or len(locc[len(data)-2][0])==0 or len(locc[1][0])>0 or len(locc[2][0])>0 or len(locc[4][0])>0 or len(locc[len(data)-4][0])>0 or len(locc[len(data)-3][0])>0 or len(locc[len(data)-1][0])>0):
             print('correcting left',thresholds)
             for i in [3,len(data)-2]:
                 if len(locc[i][0])==0:thresholds[i]-=threshold_correction_rate
             for i in [1,2,4,len(data)-4,len(data)-3,len(data)-1]:
                 if len(locc[i][0])>0:thresholds[i]+=threshold_correction_rate
-        if cv2.waitKey(1)==ord('d') and (len(locc[4][0])==0 or len(locc[len(data)-1][0])==0 or len(locc[1][0])>0 or len(locc[2][0])>0 or len(locc[3][0])>0 or len(locc[len(data)-4][0])>0 or len(locc[len(data)-3][0])>0 or len(locc[len(data)-2][0])>0):
+        if k==ord('d') and (len(locc[4][0])==0 or len(locc[len(data)-1][0])==0 or len(locc[1][0])>0 or len(locc[2][0])>0 or len(locc[3][0])>0 or len(locc[len(data)-4][0])>0 or len(locc[len(data)-3][0])>0 or len(locc[len(data)-2][0])>0):
             print('correcting right',thresholds)
             for i in [4,len(data)-1]:
                 if len(locc[i][0])==0:thresholds[i]-=threshold_correction_rate
