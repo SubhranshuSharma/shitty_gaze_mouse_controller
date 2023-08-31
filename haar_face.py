@@ -10,18 +10,20 @@ def find_face(img,face_cascade):
         roi = img[y:y+h, x:x+w]
     return roi,faces
 if __name__=='__main__':
-    cap = cv2.VideoCapture(video_source_number)  
+    cap = cv2.VideoCapture(video_source_number if video_source_number else 0)  
     while 1:
         try:
             times=time.time()
             _, img = cap.read()
-            img=cv2.flip(img,1);org=img;org=cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
-            img,faces=find_face(img,face_cascade)
+            img=cv2.flip(img,1)
+            _,faces=find_face(img,face_cascade)
+            for (x,y,w,h) in faces:
+                img = img[y:y+h, x:x+w]
             cv2.imshow('img',img)
             cv2.waitKey(1)
-#             print(faces[0][0])
-            print(1/(time.time()-times))
+#             print('\r',faces[0][0])
+            print('\rFPS: ', 1/(time.time()-times), end='',sep='')
         except Exception as a:
-            print(a)
-            cv2.imshow('img',org)
+            print('\r', a, sep='', end='')
+            cv2.imshow('img',img)
             cv2.waitKey(1)

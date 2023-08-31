@@ -1,4 +1,4 @@
-import cv2
+import cv2, time
 import numpy as np
 import tensorflow as tf
 from tensorflow import keras
@@ -177,7 +177,7 @@ def draw_marks(image, marks, color=(0, 255, 0)):
 face_model = get_face_detector()
 landmark_model = get_landmark_model()
 if __name__ == "__main__":
-    cap = cv2.VideoCapture(video_source_number)
+    cap = cv2.VideoCapture(video_source_number if video_source_number else 0)
     while(True):
         try:
 
@@ -194,11 +194,14 @@ if __name__ == "__main__":
         #     eye1=np.array([[marks[36][0],marks[36][1]],[marks[37][0],marks[37][1]], [marks[38][0],marks[38][1]], [marks[39][0],marks[39][1]], [marks[40][0],marks[40][1]], [marks[41][0],marks[41][1]]], np.int32)
         #     eye2=np.array([[marks[42][0],marks[42][1]],[marks[43][0],marks[43][1]], [marks[44][0],marks[44][1]], [marks[45][0],marks[45][1]], [marks[46][0],marks[46][1]], [marks[47][0],marks[47][1]]], np.int32)
         #     img=roi(img,[eye1],[eye2])
-            cv2.imshow("image", cv2.cvtColor(img,cv2.COLOR_RGB2GRAY))
-            cv2.imshow("image1", image)
+#             cv2.imshow("image1", cv2.cvtColor(img,cv2.COLOR_RGB2GRAY))
+            cv2.imshow("image", image)
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
         except Exception as a:
-            print(a)
+            print(f'\r{time.ctime()[:]}: {a}',end='')
+            cv2.imshow("image", image)
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
     cap.release()
     cv2.destroyAllWindows()

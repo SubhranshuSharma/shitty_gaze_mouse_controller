@@ -7,10 +7,9 @@ if tsrf==True:
     from frontal_face import *
 if not os.path.isfile(f'{pwdpath}/profiles/{person}/dclick.jpg'):
     from collect_data import *
-else:
-    if input('collect new data?(y/enter)')=='y':
-        from collect_data import *
-    else:pass
+elif input('collect new data?(y/enter): ')=='y':
+    from collect_data import *
+else:pass
 data.extend(['r_up','r_down','r_left','r_right'])
 thresholds.extend(extra_thresholds)
 color.extend(extra_colors)
@@ -24,7 +23,7 @@ import numpy as np;from numpy import interp
 f_rate=[];x=[];locc=[];probabilities=[];r_min_x_prob=min_x_prob=r_max_x_prob=max_x_prob=r_last_max_x_prob=last_max_x_prob=r_last_min_x_prob=last_min_x_prob=r_min_y_prob=min_y_prob=r_max_y_prob=max_y_prob=r_last_max_y_prob=last_max_y_prob=r_last_min_y_prob=last_min_y_prob=r_m2x=m2x=r_m2y=m2y=0
 pyautogui.FAILSAFE = False; pyautogui.PAUSE=0
 enable=True;sizex,sizey=pyautogui.size()
-cap = cv2.VideoCapture(video_source_number)
+cap = cv2.VideoCapture(video_source_number if video_source_number else 0)
 # loading saved images 
 for i in range(len(data)):
     y = cv2.imread(f'{pwdpath}/profiles/{person}/{data[i]}.jpg',0)
@@ -123,22 +122,22 @@ while 1:
         if mode==True or enable==False:
             cv2.destroyAllWindows()
         if auto_correct_threshold==True:
-            if len(locc[7][0])>0 and len(locc[8][0])>0:
+            if len(locc[len(data)-4][0])>0 and len(locc[len(data)-3][0])>0:
                 if mousey<(sizey*auto_correct_up_pixel_limit) or mousey>(sizey*auto_correct_down_pixel_limit):
-                    print('auto correcting threshold')
-                    thresholds[7]=thresholds[7]+auto_threshold_correct_rate;thresholds[8]=thresholds[8]+auto_threshold_correct_rate
+                    print("auto correcting right eye's up-down threshold")
+                    thresholds[len(data)-4]=thresholds[len(data)-4]+auto_threshold_correct_rate;thresholds[len(data)-3]=thresholds[len(data)-3]+auto_threshold_correct_rate
             if len(locc[1][0])>0 and len(locc[2][0])>0:
                 if mousey<(sizey*auto_correct_up_pixel_limit) or mousey>(sizey*auto_correct_down_pixel_limit):
-                    print('auto correcting threshold')
+                    print("auto correcting left eye's up-down threshold")
                     thresholds[1]=thresholds[1]+auto_threshold_correct_rate;thresholds[2]=thresholds[2]+auto_threshold_correct_rate
-            if len(locc[9][0])>0 and len(locc[10][0])>0:
+            if len(locc[len(data)-2][0])>0 and len(locc[len(data)-1][0])>0:
                 if mousey<(sizey*auto_correct_up_pixel_limit) or mousey>(sizey*auto_correct_down_pixel_limit):
-                    print('auto correcting threshold')
-                    thresholds[9]=thresholds[9]+auto_threshold_correct_rate;thresholds[10]=thresholds[10]+auto_threshold_correct_rate   
+                    print("auto correcting right eye's left-right threshold")
+                    thresholds[len(data)-2]=thresholds[len(data)-2]+auto_threshold_correct_rate;thresholds[len(data)-1]=thresholds[len(data)-1]+auto_threshold_correct_rate   
             if len(locc[3][0])>0 and len(locc[4][0])>0:
                 if mousex<(sizex*auto_correct_left_pixel_limit) or mousex>(sizex*auto_correct_right_pixel_limit):
                     thresholds[3]=thresholds[3]+auto_threshold_correct_rate;thresholds[4]=thresholds[4]+auto_threshold_correct_rate
-                    print('auto correcting threshold')
+                    print("auto correcting left eye's left-right threshold")
         if tsrf==False:mode=False
 #       takes action according to result from templet matching
         if (len(locc[1][0])>0 or (len(locc[7][0])>0) and len(locc[7][0])>0) and enable and mode==False:
@@ -175,7 +174,7 @@ while 1:
             print(f'mode:{mode}')
             cap.set(cv2.CAP_PROP_BUFFERSIZE,1);ret, img = cap.read()
             time.sleep(delay_after_dclick_or_enable);cap.set(cv2.CAP_PROP_BUFFERSIZE,4)
-#       exact pixel pridiction
+#       exact pixel prediction
         if mode==True and enable and tsrf:
             m2x=interp(probabilities[4]-probabilities[3],[min_x_prob,max_x_prob],[0,sizex])
             m2y=interp(probabilities[2]-probabilities[1],[min_y_prob,max_y_prob],[0,sizey])
@@ -193,33 +192,37 @@ while 1:
         k=cv2.waitKey(1)
         if k==ord('w') and (len(locc[1][0])==0 or len(locc[len(data)-4][0])==0 or len(locc[2][0])>0 or len(locc[3][0])>0 or len(locc[4][0])>0 or len(locc[len(data)-3][0])>0 or len(locc[len(data)-2][0])>0 or len(locc[len(data)-1][0])>0):
             print('correcting up',thresholds)
+            last_min_y_prob=min_y_prob=last_max_y_prob=max_y_prob=r_last_min_y_prob=r_min_y_prob=r_last_max_y_prob=r_max_y_prob=0
             for i in [1,len(data)-4]:
                 if len(locc[i][0])==0:thresholds[i]-=threshold_correction_rate
             for i in [2,3,4,len(data)-3,len(data)-2,len(data)-1]:
                 if len(locc[i][0])>0:thresholds[i]+=threshold_correction_rate
         if k==ord('s') and (len(locc[2][0])==0 or len(locc[len(data)-3][0])==0 or len(locc[1][0])>0 or len(locc[3][0])>0 or len(locc[4][0])>0 or len(locc[len(data)-4][0])>0 or len(locc[len(data)-2][0])>0 or len(locc[len(data)-1][0])>0):
             print('correcting down',thresholds)
+            last_min_y_prob=min_y_prob=last_max_y_prob=max_y_prob=r_last_min_y_prob=r_min_y_prob=r_last_max_y_prob=r_max_y_prob=0
             for i in [2,len(data)-3]: 
                 if len(locc[i][0])==0:thresholds[i]-=threshold_correction_rate
             for i in [1,3,4,len(data)-4,len(data)-2,len(data)-1]:
                 if len(locc[i][0])>0:thresholds[i]+=threshold_correction_rate   
         if k==ord('a') and (len(locc[3][0])==0 or len(locc[len(data)-2][0])==0 or len(locc[1][0])>0 or len(locc[2][0])>0 or len(locc[4][0])>0 or len(locc[len(data)-4][0])>0 or len(locc[len(data)-3][0])>0 or len(locc[len(data)-1][0])>0):
             print('correcting left',thresholds)
+            min_x_prob=last_min_x_prob=max_x_prob=last_max_x_prob=r_min_x_prob=r_last_min_x_prob=r_max_x_prob=r_last_max_x_prob=0
             for i in [3,len(data)-2]:
                 if len(locc[i][0])==0:thresholds[i]-=threshold_correction_rate
             for i in [1,2,4,len(data)-4,len(data)-3,len(data)-1]:
                 if len(locc[i][0])>0:thresholds[i]+=threshold_correction_rate
         if k==ord('d') and (len(locc[4][0])==0 or len(locc[len(data)-1][0])==0 or len(locc[1][0])>0 or len(locc[2][0])>0 or len(locc[3][0])>0 or len(locc[len(data)-4][0])>0 or len(locc[len(data)-3][0])>0 or len(locc[len(data)-2][0])>0):
             print('correcting right',thresholds)
+            min_x_prob=last_min_x_prob=max_x_prob=last_max_x_prob=r_min_x_prob=r_last_min_x_prob=r_max_x_prob=r_last_max_x_prob=0
             for i in [4,len(data)-1]:
                 if len(locc[i][0])==0:thresholds[i]-=threshold_correction_rate
             for i in [1,2,3,len(data)-4,len(data)-4,len(data)-2]:
                 if len(locc[i][0])>0:thresholds[i]+=threshold_correction_rate
-        f_rate.append(1/(time.time()-times))
         if print_frame_rate==True:
-            print('fr:',1/(time.time()-times))
+            print('\rfr:',1/(time.time()-times),end='')
         if print_additive_average_frame_rate==True:
-            print('afr:',sum(f_rate)/len(f_rate))
+            f_rate.append(1/(time.time()-times))
+            print('\rafr:',sum(f_rate)/len(f_rate),end='')
         locc=[];probabilities=[]
     except Exception as a:
         print(a)
