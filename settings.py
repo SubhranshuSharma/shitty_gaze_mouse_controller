@@ -16,7 +16,7 @@ auto_correct_down_pixel_limit=.5
 delay_after_dclick_or_enable=.1
 threshold_correction_rate=.01
 auto_threshold_correct_rate=.01
-cur=False
+show_cursor=False
 brightness_correction=False
 #brightness_correction doesnt work well
 show_left_eye=True
@@ -27,7 +27,8 @@ color=[[0,0,0],[0,50,100],[100,50,0],[100,150,200],[200,150,100],[200,0,0],[0,0,
 extra_colors=[[0,50,100],[100,50,0],[100,150,200],[200,150,100]]
 correct=['e','u','d','l','r','c','m']
 steps=['raise your left eyebrow','look up','look down','look left','look right','close left eye','close right eye']
-
+bug_x_drift_speed=125
+bug_y_drift_speed=76
 
 
 if tsrf==False and brightness_correction==True:

@@ -1,7 +1,8 @@
 import os
 pwdpath=os.getcwd()
 from settings import *
-from PIL import ImageGrab
+if show_cursor==True:
+    from PIL import ImageGrab
 from haar_face import *
 if tsrf==True:
     from frontal_face import *
@@ -18,7 +19,7 @@ for i in range(4):
 # data=['bros','up','down','left','right','dclick']
 # color=[[0,0,0],[0,50,100],[100,50,0],[100,150,200],[200,150,100],[200,0,0]]
 # thresholds=[.95,.85,.85,.85,.85,.9]
-import math, time, cv2, pyautogui
+import time, cv2, pyautogui
 import numpy as np;from numpy import interp
 f_rate=[];x=[];locc=[];probabilities=[];r_min_x_prob=min_x_prob=r_max_x_prob=max_x_prob=r_last_max_x_prob=last_max_x_prob=r_last_min_x_prob=last_min_x_prob=r_min_y_prob=min_y_prob=r_max_y_prob=max_y_prob=r_last_max_y_prob=last_max_y_prob=r_last_min_y_prob=last_min_y_prob=r_m2x=m2x=r_m2y=m2y=0
 pyautogui.FAILSAFE = False; pyautogui.PAUSE=0
@@ -109,61 +110,59 @@ while 1:
             time.sleep(delay_after_dclick_or_enable);cap.set(cv2.CAP_PROP_BUFFERSIZE,4)
         mousex,mousey=pyautogui.position()
 #       displays screen in small windows
-        if mode==False and enable==True and cur==True:
+        if mode==False and enable and show_cursor:
             box = (mousex-100,mousey-100,mousex+100,mousey+100)
             cursor=np.asarray(ImageGrab.grab(box),dtype=np.uint8)
             cursor=cv2.cvtColor(cursor,cv2.COLOR_BGR2RGB)
             cursor=cv2.resize(cursor,(120,120))
-            cv2.imshow('cursoru',cursor);cv2.imshow('cursord',cursor);cv2.imshow('cursorl',cursor);cv2.imshow('cursorr',cursor)
-            cv2.moveWindow('cursoru',int(sizex/2)-120,0)
-            cv2.moveWindow('cursord',int(sizex/2)-120,sizey-200)
-            cv2.moveWindow('cursorl',0,int(sizey/2)-100)
-            cv2.moveWindow('cursorr',sizex-300,int(sizey/2)-100)
+            cv2.imshow('cursor',cursor)
         if mode==True or enable==False:
             cv2.destroyAllWindows()
         if auto_correct_threshold==True:
             if len(locc[len(data)-4][0])>0 and len(locc[len(data)-3][0])>0:
                 if mousey<(sizey*auto_correct_up_pixel_limit) or mousey>(sizey*auto_correct_down_pixel_limit):
                     print("auto correcting right eye's up-down threshold")
-                    thresholds[len(data)-4]=thresholds[len(data)-4]+auto_threshold_correct_rate;thresholds[len(data)-3]=thresholds[len(data)-3]+auto_threshold_correct_rate
+                    thresholds[len(data)-4]+=auto_threshold_correct_rate;thresholds[len(data)-3]+=auto_threshold_correct_rate
             if len(locc[1][0])>0 and len(locc[2][0])>0:
                 if mousey<(sizey*auto_correct_up_pixel_limit) or mousey>(sizey*auto_correct_down_pixel_limit):
                     print("auto correcting left eye's up-down threshold")
-                    thresholds[1]=thresholds[1]+auto_threshold_correct_rate;thresholds[2]=thresholds[2]+auto_threshold_correct_rate
+                    thresholds[1]+=auto_threshold_correct_rate;thresholds[2]+=auto_threshold_correct_rate
             if len(locc[len(data)-2][0])>0 and len(locc[len(data)-1][0])>0:
                 if mousey<(sizey*auto_correct_up_pixel_limit) or mousey>(sizey*auto_correct_down_pixel_limit):
                     print("auto correcting right eye's left-right threshold")
-                    thresholds[len(data)-2]=thresholds[len(data)-2]+auto_threshold_correct_rate;thresholds[len(data)-1]=thresholds[len(data)-1]+auto_threshold_correct_rate   
+                    thresholds[len(data)-2]+=auto_threshold_correct_rate;thresholds[len(data)-1]+=auto_threshold_correct_rate   
             if len(locc[3][0])>0 and len(locc[4][0])>0:
                 if mousex<(sizex*auto_correct_left_pixel_limit) or mousex>(sizex*auto_correct_right_pixel_limit):
-                    thresholds[3]=thresholds[3]+auto_threshold_correct_rate;thresholds[4]=thresholds[4]+auto_threshold_correct_rate
+                    thresholds[3]+=auto_threshold_correct_rate;thresholds[4]+=auto_threshold_correct_rate
                     print("auto correcting left eye's left-right threshold")
         if tsrf==False:mode=False
 #       takes action according to result from templet matching
-        if (len(locc[1][0])>0 or (len(locc[7][0])>0) and len(locc[7][0])>0) and enable and mode==False:
-#             print('up')
-#             cv2.moveWindow('cursor',int(sizex/2)-20,0)
-#             cv2.destroyWindow('cursord')
-            for i in range(cursor_speed):
-                pyautogui.move(0, -1)
-        if (len(locc[2][0])>0 or len(locc[8][0])>0) and enable and mode==False:
-#             print('down')
-#             cv2.moveWindow('cursor',int(sizex/2)-20,sizey-20)
-#             cv2.destroyWindow('cursoru')
-            for i in range(cursor_speed):
-                pyautogui.move(0, 1)
-        if (len(locc[3][0])>0 or len(locc[9][0])>0) and enable and mode==False:
-#             print('left')
-#             cv2.moveWindow('cursor',0,int(sizey/2)-20)
-#             cv2.destroyWindow('cursorr')
-            for i in range(cursor_speed):
-                pyautogui.move(-1, 0)
-        if (len(locc[4][0])>0 or len(locc[10][0])>0) and enable and mode==False:
-#             print('right')
-#             cv2.moveWindow('cursor',sizex-100,int(sizey/2))
-#             cv2.destroyWindow('cursorl')
-            for i in range(cursor_speed):
-                pyautogui.move(1,0)
+        if enable and mode==False:
+            if (len(locc[1][0])>0 or len(locc[7][0])>0):
+                # print('up')
+                if show_cursor:cv2.moveWindow('cursor',cv2.getWindowImageRect('cursor')[0]-bug_x_drift_speed,0)
+                for i in range(cursor_speed):
+                    pyautogui.move(0, -1)
+            if (len(locc[2][0])>0 or len(locc[8][0])>0):
+                # print('down')
+                if show_cursor:cv2.moveWindow('cursor',cv2.getWindowImageRect('cursor')[0]-bug_x_drift_speed,int(sizey-(sizey*.185)))
+                for i in range(cursor_speed):
+                    pyautogui.move(0, 1)
+            if (len(locc[3][0])>0 or len(locc[9][0])>0):
+                # print('left')
+                if show_cursor:cv2.moveWindow('cursor',0,cv2.getWindowImageRect('cursor')[1]-bug_y_drift_speed)
+                for i in range(cursor_speed):
+                    pyautogui.move(-1, 0)
+            if (len(locc[4][0])>0 or len(locc[10][0])>0):
+                # print('right')
+                if show_cursor:cv2.moveWindow('cursor',int(sizex-(sizex*.125)),cv2.getWindowImageRect('cursor')[1]-bug_y_drift_speed)
+                for i in range(cursor_speed):
+                    pyautogui.move(1,0)
+            if show_cursor:
+                if not(len(locc[1][0])>0 and len(locc[7][0])>0) and not(len(locc[2][0])>0 and len(locc[8][0])>0):
+                    cv2.moveWindow('cursor',cv2.getWindowImageRect('cursor')[0]-bug_x_drift_speed , int((sizey/2)-(sizey*.0925)))
+                if not(len(locc[3][0])>0 and len(locc[9][0])>0) and not(len(locc[4][0])>0 and len(locc[10][0])>0):
+                    cv2.moveWindow('cursor', int((sizex/2)-(sizex*.0625)), cv2.getWindowImageRect('cursor')[1]-bug_y_drift_speed)
         if len(locc[5][0])>0 and enable and len(locc[6][0])==0:
             pyautogui.doubleClick()
             print('dc')
