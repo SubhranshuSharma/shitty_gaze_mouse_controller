@@ -24,6 +24,6 @@ if __name__=='__main__':
 #             print('\r',faces[0][0])
             print('\rFPS: ', 1/(time.time()-times), end='',sep='')
         except Exception as a:
-            print('\r', a, sep='', end='')
+            print(f'\r{time.ctime()[:]}: {a}',end='')
             cv2.imshow('img',img)
             cv2.waitKey(1)

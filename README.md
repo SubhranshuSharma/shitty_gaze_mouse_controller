@@ -16,8 +16,8 @@ if script is running slower than in video that is because the default setting of
 
 more detailed instructions coming in no longer than 8 years.
 
-[(worse) c++ port](https://subhranshusharma.github.io/binaries/sgmc_lite) run `sudo apt install libx11-dev libopencv-dev libxtst-dev`
+[(worse) c++ port](https://github.com/SubhranshuSharma/SubhranshuSharma.github.io/releases/latest/download/sgmc_lite) run `sudo apt install libx11-dev libopencv-dev libxtst-dev`
 
-[(even worse) bloatscript port](https://subhranshusharma.github.io/gaze_mouse/) to also control cursor using a ram hack (for now windows firefox only) [download](https://subhranshusharma.github.io/binaries/hack_the_world.exe) and run `hack_the_world.exe <process ID>` (shift+esc in firefox to find process ID of tab)
+[(even worse) bloatscript port](https://subhranshusharma.github.io/gaze_mouse/) to also control cursor using a ram hack (for now windows firefox only) [download](https://github.com/SubhranshuSharma/SubhranshuSharma.github.io/releases/latest/download/hack_the_world.exe) and run `hack_the_world.exe`
 
 [irc](https://subhranshusharma.github.io?r=irc://irc.libera.chat/the_elite_order_of_pure_thought) or [discord server](https://discord.gg/YBuQuHRc59) for suggestions or whatever

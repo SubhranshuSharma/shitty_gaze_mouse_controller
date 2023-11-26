@@ -56,4 +56,4 @@ while 1:
             cv2.destroyAllWindows()
             break
     except Exception as a:
-        print(a)
+        print(f'\r{time.ctime()[:]}: {a}',end='')
