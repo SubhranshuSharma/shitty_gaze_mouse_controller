@@ -14,6 +14,9 @@ after that it should start working, if its under detecting try changing threshol
 
 if script is running slower than in video that is because the default setting of tsrf boolian is true in settings.py try making it false.
 
+see [minimal](https://github.com/SubhranshuSharma/shitty_gaze_mouse_controller/tree/minimal) branch for easier code (close to first commit). 
+
+
 more detailed instructions coming in no longer than 8 years.
 
 [(worse) c++ port](https://github.com/SubhranshuSharma/SubhranshuSharma.github.io/releases/latest/download/sgmc_lite) run `sudo apt install libx11-dev libopencv-dev libxtst-dev`
