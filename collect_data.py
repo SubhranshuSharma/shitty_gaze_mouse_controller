@@ -9,7 +9,7 @@ a='bros';data=['bros','up','down','left','right','dclick']
 lighting=[]
 if not os.path.exists(f'{pwdpath}/profiles/{person}'):
     os.makedirs(f'{pwdpath}/profiles/{person}')
-cap=cv2.VideoCapture(0)
+cap=cv2.VideoCapture(video_source_number if video_source_number else 0)
 cap.set(cv2.CAP_PROP_BUFFERSIZE,1)
 i=0
 while 1:

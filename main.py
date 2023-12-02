@@ -1,21 +1,21 @@
 import os
 pwdpath=os.getcwd()
-if not os.path.isfile(f'{pwdpath}/profiles/vibhu/dclick.jpg'):
+if not os.path.isfile(f'{pwdpath}/profiles/abc/dclick.jpg'):
     from collect_data import *
 else:
     current_lighting=100
-    if input('collect data again?(y/n):')=='y':
+    if input('collect data again?(y/enter):')=='y':
         from collect_data import *
 data=['bros','up','down','left','right','dclick']
 color=[[0,0,0],[0,50,100],[100,50,0],[100,150,200],[200,150,100],[200,0,0]]
-thresholds=[.85,.9,.9,.9,.9,.9]
+thresholds=[.9,.9,.9,.9,.9,.9]
 import math, time, cv2, pyautogui
 import numpy as np
 from settings import *
 f_rate=[];x=[];locc=[]
 pyautogui.FAILSAFE = False; pyautogui.PAUSE=0
 enable=True
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture(video_source_number if video_source_number else 0)
 for i in range(len(data)):
     y = cv2.imread(f'{pwdpath}/profiles/{person}/{data[i]}.jpg',0)
     w, h = y.shape[::-1]
