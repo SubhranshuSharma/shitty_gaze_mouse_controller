@@ -21,7 +21,8 @@ for i in range(4):
 # thresholds=[.95,.85,.85,.85,.85,.9]
 import time, cv2, pyautogui
 import numpy as np;from numpy import interp
-f_rate=[];x=[];locc=[];probabilities=[];r_min_x_prob=min_x_prob=r_max_x_prob=max_x_prob=r_last_max_x_prob=last_max_x_prob=r_last_min_x_prob=last_min_x_prob=r_min_y_prob=min_y_prob=r_max_y_prob=max_y_prob=r_last_max_y_prob=last_max_y_prob=r_last_min_y_prob=last_min_y_prob=r_m2x=m2x=r_m2y=m2y=0
+from collections import deque
+f_rate=deque(maxlen=500);x=[];locc=[];probabilities=[];r_min_x_prob=min_x_prob=r_max_x_prob=max_x_prob=r_last_max_x_prob=last_max_x_prob=r_last_min_x_prob=last_min_x_prob=r_min_y_prob=min_y_prob=r_max_y_prob=max_y_prob=r_last_max_y_prob=last_max_y_prob=r_last_min_y_prob=last_min_y_prob=r_m2x=m2x=r_m2y=m2y=0
 pyautogui.FAILSAFE = False; pyautogui.PAUSE=0
 enable=True;sizex,sizey=pyautogui.size()
 cap = cv2.VideoCapture(video_source_number if video_source_number else 0)
@@ -182,9 +183,9 @@ while 1:
             pyautogui.moveTo(int((m2x+r_m2x)/2),int((m2y+r_m2y)/2))
         if tsrf==True and not mode and enable:
             if show_left_eye==True:
-                cv2.imshow('left eye',images[1])
+                show_clean('left eye', images[1])
             if show_left_eyebrow==True:    
-                cv2.imshow('left eyebrow',images[0])
+                show_clean('left eyebrow', images[0])
         if tsrf==False:
             cv2.imshow('org',org)
 #       threshold correction by w,s,a,d keys

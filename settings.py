@@ -37,3 +37,40 @@ if tsrf==False and brightness_correction==True:
     print("turning off brightness correction")
 if tsrf==False and mode==True:
     mode==False;print('2 modes only when tsrf enabled')
+    
+import os, sys, warnings, cv2
+
+# Mute Python warnings
+warnings.filterwarnings('ignore')
+
+# Set TF C++ logging level (3 = ERROR/FATAL only)
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+
+# Temporarily suppress C++ stderr during TF import
+real_stderr_fd = os.dup(sys.stderr.fileno())
+devnull_fd = os.open(os.devnull, os.O_WRONLY)
+os.dup2(devnull_fd, sys.stderr.fileno())
+
+# Import TensorFlow while stderr is muted
+import tensorflow as tf
+import logging
+
+tf.get_logger().setLevel(logging.ERROR)
+
+# Restore real stderr immediately after import so normal prints/prompts work
+os.dup2(real_stderr_fd, sys.stderr.fileno())
+os.close(real_stderr_fd)
+os.close(devnull_fd)
+
+if os.environ.get("XDG_SESSION_TYPE") == "wayland":
+    print('cursor tracking disabled for wayland')
+    show_cursor = False
+    auto_correct_threshold = False
+    import wayland_patch
+    
+def show_clean(win_name, img, scale=4.0):
+    scaled = cv2.resize(img, (0, 0), fx=scale, fy=scale, interpolation=cv2.INTER_CUBIC)
+    cv2.namedWindow(win_name, cv2.WINDOW_NORMAL | cv2.WINDOW_GUI_NORMAL)
+    h, w = scaled.shape[:2]
+    cv2.resizeWindow(win_name, w, h)
+    cv2.imshow(win_name, scaled)

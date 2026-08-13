@@ -39,18 +39,20 @@ while 1:
             img=img*(60/np.average(img));img=img.astype('uint8')
             r_=r_*(60/np.average(r_));r_=r_.astype('uint8')
 #         img=cv2.GaussianBlur(img,(5,5),cv2.BORDER_DEFAULT)
-        cv2.imshow('img',img)
+        show_clean('img', img)
         sizex,sizey=pyautogui.size()
         if i in [1,2,3,4]:
-            cv2.imshow('right eye',r_);cv2.moveWindow('right eye',int((sizex/2)-150),int(sizey/2)-150)
+            show_clean('right eye',r_);cv2.moveWindow('right eye',int((sizex/2)-150),int(sizey/2)-150)
         if i==5:cv2.destroyWindow('right eye')
         print(steps[i])
-        print('press s to save anything else to retake')
-        if cv2.waitKey(0)==ord('s'):
+        print('press s to save anything else to retake, q to quit')
+        key=cv2.waitKey(0)
+        if key==ord('s'):
             img=cv2.resize(img,(50,25))
             cv2.imwrite(f'{pwdpath}/profiles/{person}/{data[i]}.jpg',img)
             if i in [1,2,3,4]:cv2.imwrite(f'{pwdpath}/profiles/{person}/r_{data[i]}.jpg',r_)
             i+=1
+        elif key==ord('q'):exit()
         if i==len(data):
             cap.release()
             cv2.destroyAllWindows()
